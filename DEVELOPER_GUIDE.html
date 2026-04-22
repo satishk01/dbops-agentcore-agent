@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataOps Agent — Developer Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap');
+
+        :root {
+            --bg: #FFFFFF;
+            --bg-secondary: #F5F5F7;
+            --bg-code: #1D1D1F;
+            --text: #1D1D1F;
+            --text-secondary: #6E6E73;
+            --accent: #0071E3;
+            --accent-light: #E1F0FF;
+            --border: #D2D2D7;
+            --border-light: #E5E5EA;
+            --green: #34C759;
+            --orange: #FF9500;
+            --red: #FF3B30;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text);
+            line-height: 1.7;
+            background: var(--bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px 80px;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: saturate(180%) blur(20px);
+            border-bottom: 0.5px solid var(--border-light);
+            padding: 12px 24px;
+            margin: -40px -24px 40px;
+        }
+        nav .nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        nav .nav-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        nav .nav-badge {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 3px 10px;
+            border-radius: 100px;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+            color: var(--text);
+        }
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+            margin: 48px 0 16px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border-light);
+            color: var(--text);
+        }
+        h3 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 32px 0 12px;
+            color: var(--text);
+        }
+        h4 {
+            font-size: 15px;
+            font-weight: 600;
+            margin: 24px 0 8px;
+            color: var(--text-secondary);
+        }
+        p { margin-bottom: 14px; color: var(--text); }
+        a { color: var(--accent); text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        strong { font-weight: 600; }
+        hr { border: none; border-top: 1px solid var(--border-light); margin: 40px 0; }
+
+        /* Lists */
+        ul, ol { margin: 0 0 16px 24px; }
+        li { margin-bottom: 6px; }
+
+        /* Code */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            color: #E83E8C;
+        }
+        pre {
+            background: var(--bg-code);
+            color: #E5E5EA;
+            padding: 20px 24px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 16px 0 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        pre code {
+            background: none;
+            padding: 0;
+            color: inherit;
+            font-size: inherit;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+            font-size: 14px;
+        }
+        th {
+            text-align: left;
+            padding: 10px 14px;
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-light);
+            vertical-align: top;
+        }
+        tr:hover td { background: #FAFAFA; }
+
+        /* Callouts */
+        .callout {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin: 16px 0 24px;
+            font-size: 14px;
+        }
+        .callout-warning {
+            background: #FFF3E0;
+            border-left-color: var(--orange);
+        }
+        .callout-danger {
+            background: #FFEBEE;
+            border-left-color: var(--red);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 100px;
+            margin-right: 4px;
+        }
+        .badge-high { background: #FFEBEE; color: var(--red); }
+        .badge-medium { background: #FFF3E0; color: var(--orange); }
+        .badge-low { background: #E8F5E9; color: var(--green); }
+        .badge-tool { background: var(--accent-light); color: var(--accent); }
+
+        /* TOC */
+        .toc {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin: 24px 0 40px;
+        }
+        .toc h3 { margin-top: 0; }
+        .toc ol { margin-left: 20px; }
+        .toc li { margin-bottom: 4px; font-size: 14px; }
+        .toc a { color: var(--text); font-weight: 500; }
+        .toc a:hover { color: var(--accent); }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px 16px 60px; }
+            h1 { font-size: 28px; }
+            h2 { font-size: 20px; }
+            pre { padding: 14px 16px; font-size: 12px; }
+            table { font-size: 12px; }
+            th, td { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-inner">
+        <span class="nav-title">🗄️ DataOps Agent — Developer Guide</span>
+        <span class="nav-badge">v2.0.0 · 27 Tools</span>
+    </div>
+</nav>
+
+<div class="container">
+
+<h1>DataOps Agent — Developer Guide</h1>
+
+<h2 id="overview">Overview</h2>
+<p>The DataOps Agent is an AI-powered autonomous database operations assistant for Amazon Aurora PostgreSQL. It is deployed on <strong>Amazon Bedrock AgentCore Runtime</strong> and provides a conversational interface for database health monitoring, query performance tuning, and safe remediation actions.</p>
+
+<p>The system consists of two files:</p>
+<table>
+<tr><th>File</th><th>Purpose</th></tr>
+<tr><td><code>dataops_agent.py</code></td><td>The agent backend — all tools, LLM orchestration, and AgentCore entrypoint</td></tr>
+<tr><td><code>dataops_ui.py</code></td><td>Streamlit chat UI that invokes the deployed agent</td></tr>
+</table>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<ol>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#tech-stack">Technology Stack</a></li>
+<li><a href="#agent-breakdown">dataops_agent.py — Detailed Breakdown</a></li>
+<li><a href="#tools">Tools (27 total)</a></li>
+<li><a href="#deep-analyze">Deep Analyze Query — Core Intelligence</a></li>
+<li><a href="#plan-detection">Plan Issue Detection</a></li>
+<li><a href="#safety">Safety Layer</a></li>
+<li><a href="#system-prompt">Agent System Prompt</a></li>
+<li><a href="#entrypoint">AgentCore Entrypoint</a></li>
+<li><a href="#ui-breakdown">dataops_ui.py — Detailed Breakdown</a></li>
+<li><a href="#deployment">Deployment</a></li>
+<li><a href="#data-flow">Data Flow</a></li>
+<li><a href="#security">Security</a></li>
+<li><a href="#testing">Testing</a></li>
+<li><a href="#extending">Extending the Agent</a></li>
+<li><a href="#design-decisions">Key Design Decisions</a></li>
+</ol>
+</div>
+</div>
+</body>
+</html>
+
+<!-- Reopen container for remaining content -->
+<div class="container" style="padding-top:0;">
+
+<h2 id="architecture">Architecture</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────┐
+│                         User (Browser)                               │
+│                              │                                       │
+│                     ┌────────▼────────┐                             │
+│                     │  dataops_ui.py  │  Streamlit Chat UI          │
+│                     │  (Streamlit)    │                             │
+│                     └────────┬────────┘                             │
+│                              │ invoke_agent_runtime()                │
+│                              ▼                                       │
+│              ┌───────────────────────────────┐                      │
+│              │  Amazon Bedrock AgentCore      │                      │
+│              │  Runtime (Managed Container)   │                      │
+│              │                               │                      │
+│              │  ┌─────────────────────────┐  │                      │
+│              │  │   dataops_agent.py       │  │                      │
+│              │  │                         │  │                      │
+│              │  │  ┌───────────────────┐  │  │                      │
+│              │  │  │  Strands Agent    │  │  │                      │
+│              │  │  │  (Claude Sonnet)  │  │  │                      │
+│              │  │  │  + 27 Tools       │  │  │                      │
+│              │  │  └────────┬──────────┘  │  │                      │
+│              │  └───────────┼─────────────┘  │                      │
+│              └──────────────┼────────────────┘                      │
+│                             │                                        │
+│              ┌──────────────┼──────────────────────┐                │
+│              │              │                      │                 │
+│              ▼              ▼                      ▼                 │
+│   ┌──────────────┐  ┌────────────┐  ┌──────────────────────┐      │
+│   │ Aurora        │  │ CloudWatch │  │ Performance Insights │      │
+│   │ PostgreSQL    │  │ Metrics    │  │ (PI API)             │      │
+│   │ (psycopg2)   │  │ (boto3)    │  │ (boto3)              │      │
+│   └──────────────┘  └────────────┘  └──────────────────────┘      │
+└─────────────────────────────────────────────────────────────────────┘</code></pre>
+
+<h2 id="tech-stack">Technology Stack</h2>
+<table>
+<tr><th>Component</th><th>Technology</th></tr>
+<tr><td>LLM</td><td>Amazon Bedrock — Claude Sonnet 4 (<code>us.anthropic.claude-sonnet-4-20250514-v1:0</code>)</td></tr>
+<tr><td>Agent Framework</td><td><a href="https://github.com/strands-agents/strands-agents">Strands Agents</a></td></tr>
+<tr><td>Runtime</td><td>Amazon Bedrock AgentCore Runtime</td></tr>
+<tr><td>Database</td><td>Amazon Aurora PostgreSQL (psycopg2 with SSL)</td></tr>
+<tr><td>Metrics</td><td>AWS CloudWatch, RDS Performance Insights</td></tr>
+<tr><td>Infrastructure</td><td>AWS RDS API (boto3)</td></tr>
+<tr><td>UI</td><td>Streamlit</td></tr>
+<tr><td>Deployment</td><td>bedrock-agentcore-starter-toolkit</td></tr>
+</table>
+
+<h2 id="agent-breakdown">dataops_agent.py — Detailed Breakdown</h2>
+
+<h3>Configuration</h3>
+<p>All configuration is hardcoded at the top of the file — no <code>.env</code> file needed:</p>
+<pre><code>AWS_REGION         = "us-east-1"
+BEDROCK_MODEL_ID   = "us.anthropic.claude-sonnet-4-20250514-v1:0"
+DB_HOST            = ""   # Aurora cluster endpoint
+DB_PORT            = 5432
+DB_NAME            = "postgres"
+DB_USER            = "postgres"
+DB_PASSWORD        = ""
+DB_SSLMODE         = "verify-full"
+AURORA_CLUSTER_ID  = ""   # For CloudWatch and PI tools
+AURORA_INSTANCE_ID = ""   # For CloudWatch and PI tools</code></pre>
+
+<h3>Database Layer</h3>
+<p>The agent connects directly to Aurora PostgreSQL using psycopg2 with TLS:</p>
+<ul>
+<li><code>_load_secret()</code> — Optionally loads credentials from AWS Secrets Manager</li>
+<li><code>_ensure_rds_ca_bundle()</code> — Auto-downloads the RDS global CA bundle for SSL verification</li>
+<li><code>_get_db_params()</code> — Resolves connection parameters (Secrets Manager or hardcoded)</li>
+<li><code>_get_connection()</code> — Returns a psycopg2 connection</li>
+<li><code>execute_query(sql)</code> — Executes a read query, returns <code>list[dict]</code></li>
+<li><code>execute_command(sql)</code> — Executes a write command (DDL), returns status string</li>
+<li><code>_is_safe_sql(sql)</code> — Validates SQL against blocked patterns (DROP, DELETE, TRUNCATE, UPDATE, GRANT, REVOKE)</li>
+</ul>
+
+<h2 id="tools">Tools (27 total)</h2>
+<p>The agent has 27 tools organized into 7 categories:</p>
+
+<h3>Category 1: Health Check (Read-Only) — 6 tools</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>get_database_summary</code></td><td>Database name, size, connections, max_connections, PG version</td></tr>
+<tr><td><code>get_largest_tables</code></td><td>Top 10 tables by total disk usage (table + indexes)</td></tr>
+<tr><td><code>get_unused_indexes</code></td><td>Indexes with zero scans (wasting space and slowing writes)</td></tr>
+<tr><td><code>get_table_bloat</code></td><td>Tables with dead tuples, bloat percentage, last vacuum timestamps</td></tr>
+<tr><td><code>get_index_bloat</code></td><td>Indexes sorted by size with scan/tuple stats</td></tr>
+<tr><td><code>get_top_queries</code></td><td>Slowest queries via <code>aurora_stat_plans()</code> or <code>pg_stat_statements</code> fallback</td></tr>
+</table>
+
+<h3>Category 2: Query Tuning &amp; Explain Plan — 5 tools</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>explain_query(query, analyze)</code></td><td>Runs <code>EXPLAIN (FORMAT JSON, VERBOSE, COSTS, BUFFERS)</code> on SELECT queries. Safety-gated: blocks INSERT/UPDATE/DELETE/DROP.</td></tr>
+<tr><td><code>get_query_stats(query_substring, min_calls, sort_by)</code></td><td>Queries pg_stat_statements with filtering and sorting (total_time, mean_time, calls, rows, cache hit)</td></tr>
+<tr><td><code>suggest_missing_indexes(table_name)</code></td><td>Analyzes seq_scan ratio, existing indexes, and column statistics to recommend new indexes</td></tr>
+<tr><td><code>get_table_column_stats(table_name)</code></td><td>Column-level distribution: n_distinct, correlation, null_fraction, most_common_values</td></tr>
+<tr><td><code>deep_analyze_query(query)</code></td><td><span class="badge badge-tool">FLAGSHIP</span> All-in-one diagnostic — runs EXPLAIN + plan issue detection + pg_stat_statements + PI lookup + table analysis. Returns consolidated tuning_options.</td></tr>
+</table>
+
+<h3>Category 3: Performance Insights — 4 tools</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>get_pi_top_sql(period_minutes, max_results)</code></td><td>Top SQL by DB load (Average Active Sessions) from PI API</td></tr>
+<tr><td><code>get_pi_wait_events(period_minutes)</code></td><td>Wait events ranked by DB load (CPU, IO, Lock, LWLock, Client)</td></tr>
+<tr><td><code>get_pi_db_load_by_dimension(group_by, period_minutes)</code></td><td>Slice DB load by: wait_event, sql, user, host, application, session_type</td></tr>
+<tr><td><code>get_pi_counter_metrics(period_minutes)</code></td><td>Buffer cache hit ratio, TPS, tuples, checkpoint time, CPU, memory, connections</td></tr>
+</table>
+
+<h3>Category 4: Aurora-Specific — 5 tools</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>list_aurora_clusters</code></td><td>All clusters with endpoints, members, encryption, deletion protection</td></tr>
+<tr><td><code>get_aurora_instance_details</code></td><td>Instance class, AZ, engine version, PI status, enhanced monitoring</td></tr>
+<tr><td><code>get_aurora_replica_lag(db_instance_id, period_minutes)</code></td><td>Reader replica lag from CloudWatch</td></tr>
+<tr><td><code>get_aurora_wait_events</code></td><td>Live wait events from <code>pg_stat_activity</code> with sample queries</td></tr>
+<tr><td><code>get_aurora_active_sessions</code></td><td>Active non-idle sessions with queries, durations, wait info</td></tr>
+</table>
+
+<h3>Category 5: CloudWatch Metrics — 3 tools</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>get_cloudwatch_cpu_utilization(db_instance_id, period_minutes)</code></td><td>CPU % with avg/max at 5-min intervals</td></tr>
+<tr><td><code>get_cloudwatch_db_connections(db_instance_id, period_minutes)</code></td><td>Connection count over time</td></tr>
+<tr><td><code>get_cloudwatch_storage_metrics(db_instance_id)</code></td><td>Free storage (GB), Read/Write IOPS, Freeable Memory</td></tr>
+</table>
+
+<h3>Category 6: AWS Documentation — 1 tool</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>search_aws_docs(query, service)</code></td><td>Searches AWS documentation using Bedrock LLM knowledge. Returns practical answers with parameter names, CLI examples, and references.</td></tr>
+</table>
+
+<h3>Category 7: Safe Actions (Write) — 3 tools</h3>
+<table>
+<tr><th>Tool</th><th>Description</th></tr>
+<tr><td><code>create_index_concurrently(table_name, column_names, index_name)</code></td><td>Creates index without blocking reads/writes. Input-validated against SQL injection.</td></tr>
+<tr><td><code>analyze_table(table_name)</code></td><td>Runs ANALYZE to update planner statistics</td></tr>
+<tr><td><code>vacuum_table(table_name)</code></td><td>Runs VACUUM (non-full, non-blocking) to reclaim dead tuple space</td></tr>
+</table>
+</div>
+
+<div class="container" style="padding-top:0;">
+
+<h2 id="deep-analyze">Deep Analyze Query — The Core Intelligence</h2>
+<p><code>deep_analyze_query</code> is the flagship tool. When a user pastes a slow query, it runs the entire diagnostic chain in a single call:</p>
+<pre><code>Step 1: EXPLAIN (FORMAT JSON) → execution plan
+Step 2: _find_plan_issues() → automated detection of:
+        - Seq Scans on large tables (severity: high if &gt;10K rows)
+        - Sort spilling to disk (external merge, temp blocks)
+        - Nested Loops with high row counts (&gt;50K)
+        - Row estimate mismatches (actual vs planned &gt;10x)
+        - High-cost nodes (&gt;100K cost units)
+Step 3: pg_stat_statements → historical execution stats
+Step 4: Performance Insights → check if query appears in PI top SQL
+Step 5: Table analysis → scan stats + existing indexes for each table in plan
+Step 6: Consolidated tuning_options → prioritized fix recommendations</code></pre>
+
+<p>Each tuning option includes:</p>
+<ul>
+<li><code>option</code> — what to do (e.g., "Add index on 'orders'")</li>
+<li><code>type</code> — immediate / short_term / medium_term</li>
+<li><code>detail</code> — explanation with specific commands</li>
+<li><code>impact</code> — high / medium / low</li>
+</ul>
+
+<h2 id="plan-detection">Plan Issue Detection (<code>_find_plan_issues</code>)</h2>
+<p>The plan walker recursively traverses the EXPLAIN JSON tree and flags:</p>
+<table>
+<tr><th>Issue</th><th>Detection Logic</th><th>Severity</th></tr>
+<tr><td>Seq Scan (large)</td><td>Node Type = "Seq Scan" AND Plan Rows &gt; 10,000</td><td><span class="badge badge-high">high</span></td></tr>
+<tr><td>Seq Scan (small)</td><td>Node Type = "Seq Scan" AND Plan Rows ≤ 10,000</td><td><span class="badge badge-medium">medium</span></td></tr>
+<tr><td>Sort spill</td><td>Sort Method = "external" OR Temp Written &gt; 0</td><td><span class="badge badge-high">high</span></td></tr>
+<tr><td>Nested Loop (expensive)</td><td>Node Type = "Nested Loop" AND Plan Rows &gt; 50,000</td><td><span class="badge badge-high">high</span></td></tr>
+<tr><td>Row estimate mismatch</td><td>Actual Rows / Plan Rows &gt; 10x OR &lt; 0.1x</td><td><span class="badge badge-medium">medium</span></td></tr>
+<tr><td>High-cost node</td><td>Total Cost &gt; 100,000</td><td><span class="badge badge-medium">medium</span></td></tr>
+<tr><td>Hash disk reads</td><td>Node Type contains "Hash" AND Shared Read Blocks &gt; 1,000</td><td><span class="badge badge-medium">medium</span></td></tr>
+</table>
+
+<h2 id="safety">Safety Layer</h2>
+<div class="callout callout-danger">
+<strong>All write operations pass through <code>_is_safe_sql()</code> which blocks:</strong>
+<ul style="margin-top:8px;">
+<li><code>DROP TABLE/DATABASE/SCHEMA/INDEX</code> (but allows <code>DROP INDEX CONCURRENTLY</code>)</li>
+<li><code>DELETE FROM</code></li>
+<li><code>TRUNCATE</code></li>
+<li><code>ALTER TABLE ... DROP</code></li>
+<li><code>UPDATE</code></li>
+<li><code>GRANT</code> / <code>REVOKE</code></li>
+</ul>
+</div>
+<p>The <code>explain_query</code> and <code>deep_analyze_query</code> tools additionally block:</p>
+<ul>
+<li>Any query not starting with SELECT / WITH / VALUES</li>
+<li>Embedded DML keywords (INSERT, UPDATE, DELETE, DROP, TRUNCATE, ALTER, CREATE)</li>
+</ul>
+
+<h2 id="system-prompt">Agent System Prompt</h2>
+<p>The system prompt (~200 lines) contains:</p>
+<ol>
+<li>Tool descriptions with usage guidance</li>
+<li>Performance Insights workflow (8 steps)</li>
+<li>Query tuning workflow (10 steps)</li>
+<li>Wait Event → Root Cause → Fix mapping table (11 wait events)</li>
+<li>Counter Metric → Threshold → Fix mapping table (8 metrics)</li>
+<li>Diagnosis structure template (Diagnosis → Root Cause → Recommendations → Offer to Implement)</li>
+<li>Safety rules</li>
+</ol>
+<div class="callout">
+This ensures the agent doesn't just return raw data — it <strong>always interprets results and produces actionable recommendations</strong>.
+</div>
+
+<h2 id="entrypoint">AgentCore Entrypoint</h2>
+<pre><code>@app.entrypoint
+def invoke_dataops(payload, context=None):</code></pre>
+<p>Accepts a JSON payload:</p>
+<pre><code>{
+  "prompt": "user's natural language question",
+  "action": "agent" | "health",
+  "session_id": "uuid"
+}</code></pre>
+<ul>
+<li><code>action: "health"</code> → directly calls <code>check_health()</code> (no LLM)</li>
+<li><code>action: "agent"</code> → passes prompt to the Strands Agent which decides which tools to call</li>
+</ul>
+<p>Returns:</p>
+<pre><code>{
+  "answer": "agent's markdown response",
+  "action": "agent",
+  "query": "original prompt"
+}</code></pre>
+
+<h2 id="ui-breakdown">dataops_ui.py — Detailed Breakdown</h2>
+
+<h3>Configuration</h3>
+<pre><code>AGENT_ARN = ""  # Set after deployment
+REGION = "us-east-1"</code></pre>
+
+<h3>UI Components</h3>
+<table>
+<tr><th>Component</th><th>Description</th></tr>
+<tr><td>Top Bar</td><td>Sticky header with title, subtitle, and connection status badge</td></tr>
+<tr><td>Sidebar</td><td>New Session button, session ID display, agent ARN display</td></tr>
+<tr><td>Quick Actions</td><td>12 pre-built prompts shown when chat is empty (grid of buttons)</td></tr>
+<tr><td>Chat History</td><td>Full message history with user/assistant bubbles</td></tr>
+<tr><td>Chat Input</td><td>Text input at bottom with placeholder text</td></tr>
+</table>
+
+<h3>AgentCore Invocation</h3>
+<pre><code>def invoke_agent(prompt: str, action: str = "agent") -> dict:</code></pre>
+<ul>
+<li>Calls <code>boto3.client("bedrock-agentcore").invoke_agent_runtime()</code></li>
+<li>Retries up to 3 times on 500 errors with exponential backoff</li>
+<li>Parses the response body (handles string and dict responses)</li>
+<li>Returns the parsed response or error dict</li>
+</ul>
+
+<h3>Styling</h3>
+<p>The UI uses Apple-inspired CSS with:</p>
+<ul>
+<li>Inter font family</li>
+<li>Blue user bubbles (#0071E3), gray assistant bubbles (#F5F5F7)</li>
+<li>Sticky frosted-glass top bar</li>
+<li>Responsive layout (mobile/tablet/desktop breakpoints)</li>
+<li>Hidden Streamlit chrome (menu, footer, toolbar)</li>
+</ul>
+
+<h2 id="deployment">Deployment</h2>
+
+<h3>Prerequisites</h3>
+<pre><code>pip install -r requirements.txt</code></pre>
+<p>Required packages: <code>strands-agents</code>, <code>strands-agents-builder</code>, <code>bedrock-agentcore</code>, <code>bedrock-agentcore-starter-toolkit</code>, <code>boto3</code>, <code>psycopg2-binary</code>, <code>streamlit</code>, <code>pytest</code></p>
+
+<h3>Deploy to AgentCore</h3>
+<pre><code>python deploy_dataops_agent.py</code></pre>
+<p>This: (1) Configures the AgentCore runtime (ECR, execution role, container), (2) Packages <code>dataops_agent.py</code> + <code>requirements.txt</code> into a container, (3) Deploys to AgentCore Runtime, (4) Returns the Agent ARN.</p>
+
+<h3>Run the UI</h3>
+<pre><code>streamlit run dataops_ui.py</code></pre>
+
+<h3>Local Testing</h3>
+<pre><code>python dataops_agent.py</code></pre>
+
+<h2 id="data-flow">Data Flow</h2>
+
+<h3>User asks "Why is this query slow?"</h3>
+<pre><code> 1. User types query in Streamlit UI
+ 2. UI calls invoke_agent_runtime(payload={prompt: "...", action: "agent"})
+ 3. AgentCore routes to invoke_dataops()
+ 4. Strands Agent receives the prompt
+ 5. LLM decides to call deep_analyze_query(query="SELECT ...")
+ 6. deep_analyze_query runs:
+    a. EXPLAIN → psycopg2 → Aurora PostgreSQL
+    b. _find_plan_issues() → in-memory plan analysis
+    c. pg_stat_statements query → psycopg2 → Aurora
+    d. PI describe_dimension_keys → boto3 → Performance Insights API
+    e. Table scan stats → psycopg2 → Aurora
+ 7. Returns consolidated JSON to the agent
+ 8. LLM interprets the results using system prompt guidance
+ 9. Produces markdown response with:
+    - Plan issues found
+    - Historical stats
+    - PI load data
+    - Numbered tuning options with trade-offs
+    - Offer to implement fixes
+10. Response returned to UI
+11. UI renders markdown in assistant bubble</code></pre>
+
+<h3>User says "Yes, create that index"</h3>
+<pre><code>1. LLM calls create_index_concurrently(table, columns, name)
+2. Tool validates inputs (regex check for SQL injection)
+3. Tool calls _is_safe_sql() on the generated SQL
+4. Tool calls execute_command() → psycopg2 → Aurora (autocommit)
+5. Returns success/failure
+6. LLM reports the result and offers to re-run explain_query to verify</code></pre>
+
+<h2 id="security">Security</h2>
+<table>
+<tr><th>Layer</th><th>Protection</th></tr>
+<tr><td>SQL Injection</td><td>All table/column/index names validated with <code>^[a-zA-Z_][a-zA-Z0-9_]*$</code> regex</td></tr>
+<tr><td>Dangerous SQL</td><td><code>_is_safe_sql()</code> blocks DROP/DELETE/TRUNCATE/UPDATE/GRANT/REVOKE</td></tr>
+<tr><td>DML in EXPLAIN</td><td><code>explain_query</code> and <code>deep_analyze_query</code> only accept SELECT/WITH/VALUES</td></tr>
+<tr><td>Database SSL</td><td>Connects with <code>sslmode=verify-full</code> using RDS global CA bundle</td></tr>
+<tr><td>Secrets</td><td>Supports AWS Secrets Manager for credentials (optional)</td></tr>
+<tr><td>Agent Safety</td><td>System prompt explicitly forbids destructive operations</td></tr>
+<tr><td>Index Creation</td><td>Always uses CONCURRENTLY (non-blocking)</td></tr>
+<tr><td>VACUUM</td><td>Always non-full (non-blocking)</td></tr>
+</table>
+
+<h2 id="testing">Testing</h2>
+
+<h3>Automated (70+ unit tests)</h3>
+<pre><code>pytest test_dataops_agent.py -v</code></pre>
+<p>All external dependencies (psycopg2, boto3, strands) are mocked. Tests cover: SQL safety validation (11 tests), all 27 tools with success and error paths, plan analysis helpers (12 tests), deep analyze query chain (10 tests), input validation and SQL injection blocking.</p>
+
+<h3>Manual (50+ test cases)</h3>
+<p>See <code>testcases.md</code> — designed to be run from the Streamlit UI by copying prompts and verifying expected behavior.</p>
+
+<h2 id="extending">Extending the Agent</h2>
+
+<h3>Adding a New Tool</h3>
+<pre><code>@tool
+def my_new_tool(param: str) -> str:
+    """Description shown to the LLM.
+    
+    Args:
+        param: What this parameter does.
+    """
+    # Implementation
+    return json.dumps({"result": "..."})</code></pre>
+<p>Then: (1) Add to <code>ALL_TOOLS</code> list, (2) Document in <code>AGENT_SYSTEM_PROMPT</code>, (3) Add to <code>check_health()</code> capabilities, (4) Write tests, (5) Add manual test cases.</p>
+
+<h3>Changing the LLM Model</h3>
+<pre><code>BEDROCK_MODEL_ID = "us.anthropic.claude-sonnet-4-20250514-v1:0"  # Change this</code></pre>
+
+<h2 id="design-decisions">Key Design Decisions</h2>
+<table>
+<tr><th>Decision</th><th>Rationale</th></tr>
+<tr><td>Single-file agent</td><td>Simplifies AgentCore deployment (one entrypoint, no package structure)</td></tr>
+<tr><td>Hardcoded config</td><td>No .env file to manage — single source of truth, deploys with the code</td></tr>
+<tr><td><code>deep_analyze_query</code> as all-in-one</td><td>Reduces LLM tool-calling overhead — one call instead of 5-6 sequential calls</td></tr>
+<tr><td>Plan walker (<code>_find_plan_issues</code>)</td><td>Deterministic issue detection without LLM — faster, cheaper, more reliable</td></tr>
+<tr><td>Safety-first SQL validation</td><td>Multiple layers: regex input validation + pattern blocking + query type restriction</td></tr>
+<tr><td>System prompt with mapping tables</td><td>Ensures the agent always produces actionable recommendations, not just raw data</td></tr>
+<tr><td>Streamlit UI (not React)</td><td>Simple to run (<code>streamlit run</code>), no build step, easy to customize</td></tr>
+<tr><td>No authentication in UI</td><td>Designed for internal/demo use — add auth as needed for production</td></tr>
+</table>
+
+<h2>File Structure</h2>
+<pre><code>.
+├── dataops_agent.py          # Agent: 27 tools + system prompt + AgentCore entrypoint
+├── dataops_ui.py             # Streamlit chat UI
+├── deploy_dataops_agent.py   # One-command deployment to AgentCore
+├── requirements.txt          # Python dependencies
+├── test_dataops_agent.py     # 70+ automated unit tests
+├── testcases.md              # 50+ manual test cases for UI validation
+├── DEVELOPER_GUIDE.md        # Markdown version of this document
+├── DEVELOPER_GUIDE.html      # This file (shareable HTML)
+├── README.md                 # Quick start guide
+└── .gitignore</code></pre>
+
+<hr>
+<p style="text-align:center;color:var(--text-secondary);font-size:13px;margin-top:40px;">
+    DataOps Agent v2.0.0 · Built with Amazon Bedrock AgentCore + Strands Agents · April 2026
+</p>
+
+</div>
+</body>
+</html>

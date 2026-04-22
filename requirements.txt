@@ -1,0 +1,15 @@
+# Agent runtime (dataops_agent.py)
+strands-agents>=1.0.0
+strands-agents-builder>=0.1.0
+bedrock-agentcore>=0.1.0
+boto3>=1.35.0
+psycopg2-binary>=2.9.9
+
+# Deployment (deploy_dataops_agent.py)
+bedrock-agentcore-starter-toolkit>=0.1.0
+
+# UI (dataops_ui.py)
+streamlit>=1.30.0
+
+# Testing
+pytest>=7.0.0
